@@ -16,12 +16,6 @@ root.render(<App />);
 //     })
 //     .catch(err => console.log(err.message))
 
-// swapi.getAllStarships()
-//     .then(planets => {
-//         planets.forEach(p => console.log(p.name))
-//     })
-//     .catch(err => console.log(err.message))
-
 // swapi.getPerson(2)
 //     .then(person => console.log(person.name))
 //     .catch(err => console.log(err.message))
