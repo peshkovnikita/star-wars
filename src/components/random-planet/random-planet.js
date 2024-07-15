@@ -5,18 +5,26 @@ import Spinner from "../spinner/spinner";
 
 export default class RandomPlanet extends Component {
 
-    constructor() {
-        super();
-        this.updatePlanet()
-    }
-
-    swapi = new SwapiService();
-
     state = {
         planet: {},
         loading: true,
         error: false
     };
+
+    componentDidMount() {
+        this.updatePlanet();
+        setInterval(this.updatePlanet, 10_000)
+    }
+
+    swapi = new SwapiService();
+
+    updatePlanet = () => {
+        const id = Math.floor(Math.random() * 25) + 3;
+
+        this.swapi.getPlanet(id)
+            .then(this.onPlanetLoaded)
+            .catch(this.onError);
+    }
 
     onPlanetLoaded = (planet) => {
         this.setState({
@@ -32,20 +40,11 @@ export default class RandomPlanet extends Component {
         })
     }
 
-    updatePlanet() {
-        const id = 1200;
-
-        this.swapi.getPlanet(id)
-            .then(this.onPlanetLoaded)
-            .catch(this.onError);
-    }
-
     render() {
         const { planet, loading, error } = this.state;
-
         return (
             <div className='random-planet jumbotron rounded'>
-                { error ? <ErrorMessage /> : !loading ? <PlanetCard planet={ planet }/> : <Spinner /> }
+                { error ? <ErrorMessage /> : loading ? <Spinner /> : <PlanetCard planet={ planet }/> }
                 <button type="button" onClick={() => console.log(this.state)} style={{ width: 60, height: 30 }}>state</button>
             </div>
         );
@@ -56,7 +55,7 @@ const PlanetCard = ({ planet }) => {
     const { id, name, population, rotationPeriod, diameter } = planet
     return(
         <>
-            <img className="planet-image" src={`https://starwars-visualguide.com/assets/img/planets/${id}.jpg`} />
+            <img className="planet-image" src={`https://starwars-visualguide.com/assets/img/planets/${id}.jpg`} alt='planet img'/>
             <div>
                 <h4>{ name }</h4>
                 <ul className="list-group list-group-flush">
